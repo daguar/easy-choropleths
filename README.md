@@ -14,7 +14,7 @@ Right now, easiest way is to `cd` into the root directory and run the python one
 
 Then load up your browser (preferably Chrome with Dev Console open) to:
 
-http://0.0.0.0/easy-choropleths.html
+http://0.0.0.0:8000/easy-choropleths.html
 
 
 Copyright Dave Guarino, 2014
