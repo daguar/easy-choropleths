@@ -1,7 +1,7 @@
 Easy Choropleths
 ====
 
-An experimental tool to let humans build choropleths (data-shaded maps) easy to build.
+An experimental tool to let humans build choropleths (data-shaded maps) without any knowledge of Javascript or GIS.
 
 The idea is flushed out in my `ideas` repo here:
 
