@@ -47,7 +47,18 @@
 // Getting data
 
 // Uncomment when want to hit Google for data
-//window.onload = function() { getDataFromGoogle("0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc", showInfo) };
+window.onload = function() { getDataFromGoogle("0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc", doStuffWithData) };
+
+// Main workhorse
+function doStuffWithData(data, tabletop) {
+  values_only_array = extractValuesFromObjectArray(data)
+  quantizer = new Quantizer(values_only_array)
+  console.log("Original data points:")
+  console.log(values_only_array)
+  scaled_data = _.map(values_only_array, function(old_value) { return quantizer.quantizeNumber(old_value) } )
+  console.log("Scaled data points:")
+  console.log(scaled_data)
+}
 
 
 // Retrieves the spreadsheet with key (gdoc_key) and passes it to the callback (passed as: myCallback(data, tabletop) )
@@ -57,7 +68,6 @@ function getDataFromGoogle(gdoc_key, callback) {
                    callback: callback,
                    simpleSheet: true } )
 }
-
 // Callback for testing purposes
 // Logs success and the data, and lifts it up to the global myData var
 var myData;
@@ -67,17 +77,16 @@ function showInfo(data, tabletop) {
   console.log(data);
 }
 
-
-
 // Given an array of objects, returns an array of the values contained in the 'value' slots of each object
 function extractValuesFromObjectArray(data_object_array) {
   return _.map(data_object_array, function(data_object) { return data_object.value; } );
 }
+/*
 //Test for extractValuesFromObjectArray()
 obj_arr = [ { name: "dave", value: 2 }, { name: "berg", value: 5 } ]
 console.log(obj_arr);
 console.log(extractValuesFromObjectArray(obj_arr));
-
+*/
 
 
 
@@ -85,19 +94,22 @@ console.log(extractValuesFromObjectArray(obj_arr));
 // Quantizing data into buckets
 // Given 
 function Quantizer(data_array) {
-  min = d3.min(data)
-  max = d3.max(data)
+  min = d3.min(data_array)
+  max = d3.max(data_array)
+  console.log("min: " + min)
+  console.log("max: " + max)
 
   this.quantizeNumber = d3.scale.quantize()
       .domain([min,max])
-      .range([1,5]) // Start with only mapping on 1-5 color scale
+      .range(d3.range(1,6)) // Start with only mapping on 1-5 color scale
 }
+/*
 //Test for Quantizer
 data = [1,2,3,10];
 var quantizer = new Quantizer(data)
 console.log(quantizer.quantizeNumber(2));
 console.log(quantizer.quantizeNumber(10));
-
+*/
 
 
 
