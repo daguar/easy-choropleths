@@ -37,17 +37,27 @@
 <!-- Underscore for awesome collection comprehensions -->
 <script src="js/underscore-min.js"></script>
 
+<!-- ParseURI.js because it's dead-simple and small -->
+<!-- See http://blog.stevenlevithan.com/archives/parseuri for details -->
+<script src="js/parseuri.js"></script>
 
 <script>
 
 
 //////////////////////////////// Begin DG ////////////////////////////////
 
-
 // Getting data
 
-// Uncomment when want to hit Google for data
-window.onload = function() { getDataFromGoogle("0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc", doStuffWithData) };
+window.onload = function() {
+  key = parseUri(location).queryKey.key
+  if(key) {
+    // Uncomment when wanting to hit Google for data
+    getDataFromGoogle("0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc", doStuffWithData)
+  }
+  else {
+    showError("Sorry! You need to add a Google key to your URL. For example:\n\n" + location.href + "?key=MyGoogleDocKeyGoesHere")
+  }
+};
 
 // Main workhorse
 function doStuffWithData(data, tabletop) {
@@ -58,7 +68,6 @@ function doStuffWithData(data, tabletop) {
   _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
   console.log("Original data with scaled values added in:")
   console.log(data)
-  // Put the scaled data back in
 }
 
 
@@ -112,6 +121,10 @@ console.log(quantizer.quantizeNumber(2));
 console.log(quantizer.quantizeNumber(10));
 */
 
+
+function showError(error_text) {
+  alert(error_text)
+}
 
 
 //////////////////////////////// End DG ////////////////////////////////
