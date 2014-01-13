@@ -52,7 +52,7 @@ window.onload = function() {
   key = parseUri(location).queryKey.key
   if(key) {
     // Uncomment when wanting to hit Google for data
-    getDataFromGoogle("0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc", doStuffWithData)
+    getDataFromGoogle(key, doStuffWithData)
   }
   else {
     showError("Sorry! You need to add a Google key to your URL. For example:\n\n" + location.href + "?key=MyGoogleDocKeyGoesHere")
@@ -123,6 +123,7 @@ console.log(quantizer.quantizeNumber(10));
 
 
 function showError(error_text) {
+  // Can change below to some other flash-like thing
   alert(error_text)
 }
 
