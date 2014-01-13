@@ -55,9 +55,10 @@ function doStuffWithData(data, tabletop) {
   quantizer = new Quantizer(values_only_array)
   console.log("Original data points:")
   console.log(values_only_array)
-  scaled_data = _.map(values_only_array, function(old_value) { return quantizer.quantizeNumber(old_value) } )
-  console.log("Scaled data points:")
-  console.log(scaled_data)
+  _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
+  console.log("Original data with scaled values added in:")
+  console.log(data)
+  // Put the scaled data back in
 }
 
 
