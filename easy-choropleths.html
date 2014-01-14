@@ -107,7 +107,6 @@ function scaleAndMapData(data, tabletop) {
 }
 
 function scaleData(data) {
-  console.log("Hit processData!")
   values_only_array = extractValuesFromObjectArray(data)
   quantizer = new Quantizer(values_only_array, Config.scale)
   _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
@@ -115,7 +114,6 @@ function scaleData(data) {
 }
 
 function mapData(data) {
-  console.log("Hit mapData!");
   var map = L.map('map').setView([37.8, -96], 4);
   // Do shit inside here for now
   $.getJSON('data/us-states.json', function(states_json) {
@@ -146,14 +144,12 @@ function configureMapOptions(options) {
   _.each(pairs, function(pair) {
     k = pair[0]
     v = pair[1]
-    console.log(v)
     // Hacky; may have more params that need to be coerced to int
     if(k === 'scale') {
       v = parseInt(v)
     }
     Config[k] = v
   })
-  console.log(Config.lol)
 }
 
 // Given an array of objects, returns an array of the values contained in the 'value' slots of each object
@@ -212,7 +208,6 @@ function addDataToGeoJson(data, geojson) {
 }
 
 function style(feature) {
-  console.log(Config.scale)
   color = getColor(feature.properties.scaled_value, Config.scale);
     return {
         fillColor: color,
@@ -254,7 +249,6 @@ info.onAdd = function (map) {
 };
 
 info.update = function (props) {
-  console.log("yolo")
   this._div.innerHTML =  (props ?
     '<b>' + props.name + '</b><br />' + props.value
     : 'Hover over a state');
