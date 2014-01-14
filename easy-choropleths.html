@@ -46,30 +46,17 @@
 
 //////////////////////////////// Begin DG ////////////////////////////////
 
-// Getting data
 
 window.onload = function() {
   key = parseUri(location).queryKey.key
   if(key) {
     // Uncomment when wanting to hit Google for data
-    getDataFromGoogle(key, doStuffWithData)
+    getDataFromGoogle(key, processAndMapData)
   }
   else {
     showError("Sorry! You need to add a Google key to your URL. For example:\n\n" + location.href + "?key=MyGoogleDocKeyGoesHere")
   }
 };
-
-// Main workhorse
-function doStuffWithData(data, tabletop) {
-  values_only_array = extractValuesFromObjectArray(data)
-  quantizer = new Quantizer(values_only_array)
-  console.log("Original data points:")
-  console.log(values_only_array)
-  _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
-  console.log("Original data with scaled values added in:")
-  console.log(data)
-}
-
 
 // Retrieves the spreadsheet with key (gdoc_key) and passes it to the callback (passed as: myCallback(data, tabletop) )
 function getDataFromGoogle(gdoc_key, callback) {
@@ -78,14 +65,34 @@ function getDataFromGoogle(gdoc_key, callback) {
                    callback: callback,
                    simpleSheet: true } )
 }
-// Callback for testing purposes
-// Logs success and the data, and lifts it up to the global myData var
-var myData;
-function showInfo(data, tabletop) {
-  console.log("Successfully processed!")
-  myData = data;
-  console.log(data);
+
+// Main workhorse
+function processAndMapData(data, tabletop) {
+  processed_data = processData(data);
+  mapData(processed_data);
 }
+
+function processData(data) {
+  console.log("Hit processData!")
+  values_only_array = extractValuesFromObjectArray(data)
+  quantizer = new Quantizer(values_only_array)
+  //console.log("Original data points:")
+  //console.log(values_only_array)
+  _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
+  //console.log("Original data with scaled values added in:")
+  //console.log(data)
+  return data;
+}
+
+function mapData(data) {
+  console.log("Hit mapData!")
+  console.log(data)
+
+}
+
+
+
+// HELPFUL SHIT
 
 // Given an array of objects, returns an array of the values contained in the 'value' slots of each object
 function extractValuesFromObjectArray(data_object_array) {
@@ -97,9 +104,6 @@ obj_arr = [ { name: "dave", value: 2 }, { name: "berg", value: 5 } ]
 console.log(obj_arr);
 console.log(extractValuesFromObjectArray(obj_arr));
 */
-
-
-
 
 // Quantizing data into buckets
 // Given 
@@ -120,7 +124,6 @@ var quantizer = new Quantizer(data)
 console.log(quantizer.quantizeNumber(2));
 console.log(quantizer.quantizeNumber(10));
 */
-
 
 function showError(error_text) {
   // Can change below to some other flash-like thing
