@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/leaflet.css" />
+
 <style>
 
 /* BEGIN Bostock's choropleth example */
+/*
 .counties {
   fill: none;
 }
@@ -20,16 +24,58 @@
 .q6-9 { fill:rgb(33,113,181); }
 .q7-9 { fill:rgb(8,81,156); }
 .q8-9 { fill:rgb(8,48,107); }
+*/
 /* END Bostock css */
+
+#map {
+  width: 800px;
+  height: 500px;
+}
+
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+.info h4 {
+  margin: 0 0 5px;
+  color: #777;
+}
+
+.legend {
+  text-align: left;
+  line-height: 18px;
+  color: #555;
+}
+.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+.leaflet-container {
+    background: white;
+}
 
 </style>
 
 
 <body>
+
+<div id="map"></div>
+
 <!-- Bostock's includes-->
 <script src="js/d3.v3.min.js"></script>
 <script src="js/queue.v1.min.js"></script>
 <script src="js/topojson.v1.min.js"></script>
+
+<!-- Leaflet -->
+<script src="js/leaflet.js"></script>
 
 <!-- Tabletop for Google Docs data pull -->
 <script src="js/tabletop.js"></script>
@@ -40,6 +86,9 @@
 <!-- ParseURI.js because it's dead-simple and small -->
 <!-- See http://blog.stevenlevithan.com/archives/parseuri for details -->
 <script src="js/parseuri.js"></script>
+
+<!-- JQuery -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
 <script>
 
@@ -85,10 +134,17 @@ function processData(data) {
 }
 
 function mapData(data) {
-  console.log("Hit mapData!")
-  console.log(data)
-
+  console.log("Hit mapData!");
+  var map = L.map('map').setView([37.8, -96], 4);
+  // Do shit inside here for now
+  $.getJSON('data/us-states.json', function(states_json) {
+    states_json = addDataToGeoJson(data, states_json)
+    geojson = L.geoJson(states_json, {
+      style: style
+    }).addTo(map);
+  });
 }
+
 
 
 
@@ -110,8 +166,8 @@ console.log(extractValuesFromObjectArray(obj_arr));
 function Quantizer(data_array) {
   min = d3.min(data_array)
   max = d3.max(data_array)
-  console.log("min: " + min)
-  console.log("max: " + max)
+  //console.log("min: " + min)
+  //console.log("max: " + max)
 
   this.quantizeNumber = d3.scale.quantize()
       .domain([min,max])
@@ -130,6 +186,47 @@ function showError(error_text) {
   alert(error_text)
 }
 
+// Given 
+function addDataToGeoJson(data, geojson) {
+  var data_hash = {};
+  _.each(data, function(data_object) { data_hash[data_object['state']] = data_object } )
+  _.each(geojson.features, function(feature) {
+    geo_name = feature.properties.name;
+    data_object = data_hash[geo_name];
+    if(data_object) {
+      feature.properties.scaled_value = data_object.scaled_value;
+      feature.properties.value = data_object.value;
+    }
+    else {
+      feature.properties.scaled_value = -1;
+      feature.properties.value = -1;
+    }
+  });
+  return geojson;
+}
+
+function style(feature) {
+  color = getColor(feature.properties.scaled_value);
+    return {
+        fillColor: color,
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        //dashArray: '3',
+        fillOpacity: 1
+    };
+}
+
+// Make sure it deals with -1 (no data)
+function getColor(num) {
+  // Green for now
+  return  num == 1 ? '#edf8fb':
+          num == 2 ? '#b2e2e2':
+          num == 3 ? '#66c2a4':
+          num == 4 ? '#2ca25f':
+          num == 5 ? '#006d2c':
+          'black';
+}
 
 //////////////////////////////// End DG ////////////////////////////////
 
