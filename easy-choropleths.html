@@ -2,49 +2,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/leaflet.css" />
-
-<style>
-
-#map {
-  width: 800px;
-  height: 500px;
-}
-
-.info {
-  padding: 6px 8px;
-  font: 14px/16px Arial, Helvetica, sans-serif;
-  background: white;
-  background: rgba(255,255,255,0.8);
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  border-radius: 5px;
-  width: 120px;
-}
-.info h4 {
-  margin: 0 0 5px;
-  color: #777;
-}
-
-.legend {
-  text-align: left;
-  line-height: 18px;
-  color: #555;
-}
-.legend i {
-  width: 18px;
-  height: 18px;
-  float: left;
-  margin-right: 8px;
-  opacity: 0.7;
-}
-
-.leaflet-container {
-    background: white;
-}
-
-</style>
-
+<link rel="stylesheet" href="css/map.css" />
 
 <body>
+
 
 <div id="map"></div>
 
@@ -70,6 +31,9 @@
 <!-- Colorbrewer (from D3) -->
 <script src="js/colorbrewer.js"></script>
 
+<!-- Markdown lib to render markdown -->
+<script src="js/markdown.min.js"></script>
+
 <script>
 
 
@@ -86,11 +50,20 @@ window.onload = function() {
     getDataFromGoogle(key, scaleAndMapData);
   }
   else {
-    showError("Sorry! You need to add a Google key to your URL. For example:\n\n" + location.href + "?key=MyGoogleDocKeyGoesHere")
+    renderGettingStarted();
   }
 };
 
-
+function renderGettingStarted() {
+  exampleUrl = location.href + "?key=0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc";
+  //html = markdown.toHTML("Sorry! **You** need to add a Google key to your URL. For example:\n\n" + "[" + exampleUrl + "]" + "(" + exampleUrl + ")");
+  //$("body").html(html);
+  //loadStyle("css/github.css");
+  $("map").remove();
+  $.get('GETTING_STARTED.md', function(raw_markdown) {
+    $("body").append(markdown.toHTML(raw_markdown))
+  });
+}
 
 // Retrieves the spreadsheet with key (gdoc_key) and passes it to the callback (passed as: myCallback(data, tabletop) )
 function getDataFromGoogle(gdoc_key, callback) {
@@ -102,6 +75,7 @@ function getDataFromGoogle(gdoc_key, callback) {
 
 // Main workhorse
 function scaleAndMapData(data, tabletop) {
+  console.log(data);
   scaledData = scaleData(data);
   mapData(scaledData);
 }
@@ -114,11 +88,19 @@ function scaleData(data) {
 }
 
 function mapData(data) {
+  //loadStyle("css/leaflet.css");
+  //loadStyle("css/map.css");
   var map = L.map('map').setView([37.8, -96], 4);
   // Do shit inside here for now
-  $.getJSON('data/us-states.json', function(states_json) {
-    states_json = addDataToGeoJson(data, states_json)
-    geojson = L.geoJson(states_json, {
+  if(Config.geo_unit === 'county') {
+    geofile = 'data/us-counties.json';
+  }
+  else {
+    geofile = 'data/us-states.json';
+  }
+  $.getJSON(geofile, function(geo_data) {
+    geo_data = addDataToGeoJson(data, geo_data)
+    geojson = L.geoJson(geo_data, {
       style: style,
       onEachFeature: onEachFeature
     }).addTo(map);
@@ -135,7 +117,8 @@ function mapData(data) {
 var Config = {
   // Attributes with defaults
   color: 'green',
-  scale: 5
+  scale: 5,
+  geo_unit: 'state'
 };
 
 // Set configuration for map by processing the URI parameters
@@ -231,9 +214,15 @@ function getColor(num, scale) {
   }
 }
 
-
-
-
+/*
+function loadStyle(path) {
+  $("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: path,
+  }).appendTo("head");
+}
+*/
 
 
 
