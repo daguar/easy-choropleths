@@ -90,6 +90,9 @@
 <!-- JQuery -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
+<!-- Colorbrewer (from D3) -->
+<script src="js/colorbrewer.js"></script>
+
 <script>
 
 
@@ -128,7 +131,7 @@ function processAndMapData(data, tabletop) {
 function processData(data) {
   console.log("Hit processData!")
   values_only_array = extractValuesFromObjectArray(data)
-  quantizer = new Quantizer(values_only_array)
+  quantizer = new Quantizer(values_only_array, Config.scale)
   _.each(data, function(data_object) { data_object.scaled_value = quantizer.quantizeNumber(data_object.value) } )
   return data;
 }
@@ -151,11 +154,11 @@ function mapData(data) {
 // HELPFUL SHIT
 
 // Config for map (from URI parameters)
-function Config() {
+var Config = {
   // Attributes with defaults
-  this.color = 'green';
-  this.scale = 5;
-}
+  color: 'green',
+  scale: 5
+};
 
 // Set configuration for map by processing the URI parameters
 function configureMapOptions(options) {
@@ -163,6 +166,11 @@ function configureMapOptions(options) {
   _.each(pairs, function(pair) {
     k = pair[0]
     v = pair[1]
+    console.log(v)
+    // Hacky; may have more params that need to be coerced to int
+    if(k === 'scale') {
+      v = parseInt(v)
+    }
     Config[k] = v
   })
   console.log(Config.lol)
@@ -181,7 +189,7 @@ console.log(extractValuesFromObjectArray(obj_arr));
 
 // Quantizing data into buckets
 // Given 
-function Quantizer(data_array) {
+function Quantizer(data_array, scale) {
   min = d3.min(data_array)
   max = d3.max(data_array)
   //console.log("min: " + min)
@@ -189,7 +197,7 @@ function Quantizer(data_array) {
 
   this.quantizeNumber = d3.scale.quantize()
       .domain([min,max])
-      .range(d3.range(1,6)) // Start with only mapping on 1-5 color scale
+      .range(d3.range(1,scale + 1)) // Start with only mapping on 1-5 color scale
 }
 /*
 //Test for Quantizer
@@ -224,7 +232,8 @@ function addDataToGeoJson(data, geojson) {
 }
 
 function style(feature) {
-  color = getColor(feature.properties.scaled_value);
+  console.log(Config.scale)
+  color = getColor(feature.properties.scaled_value, Config.scale);
     return {
         fillColor: color,
         weight: 2,
@@ -236,24 +245,15 @@ function style(feature) {
 }
 
 // Make sure it deals with -1 (no data)
-function getColor(num) {
+function getColor(num, scale) {
   if(Config.color === 'blue') {
-    return  num === 1 ? '#f1eef6':
-            num === 2 ? '#bdc9e1':
-            num === 3 ? '#74a9cf':
-            num === 4 ? '#2b8cbe':
-            num === 5 ? '#045a8d':
-            'black';
+    // Index in the array is 1 less than the scaled_number
+    return colorbrewer.Blues[scale][num - 1];
   }
   // Default to green
   else {
-    return  num === 1 ? '#edf8fb':
-            num === 2 ? '#b2e2e2':
-            num === 3 ? '#66c2a4':
-            num === 4 ? '#2ca25f':
-            num === 5 ? '#006d2c':
-            'black';
-    }
+    return colorbrewer.Greens[scale][num - 1];
+  }
 }
 
 //////////////////////////////// End DG ////////////////////////////////
