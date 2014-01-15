@@ -4,42 +4,37 @@
 <link rel="stylesheet" href="css/leaflet.css" />
 <link rel="stylesheet" href="css/map.css" />
 
-<body>
-
-
-<div id="map"></div>
-
 <!-- D3 -->
 <script src="js/d3.v3.min.js"></script>
-
 <!-- Leaflet -->
 <script src="js/leaflet.js"></script>
-
 <!-- Tabletop for Google Docs data pull -->
 <script src="js/tabletop.js"></script>
-
 <!-- Underscore for awesome collection comprehensions -->
 <script src="js/underscore-min.js"></script>
-
 <!-- ParseURI.js because it's dead-simple and small -->
 <!-- See http://blog.stevenlevithan.com/archives/parseuri for details -->
 <script src="js/parseuri.js"></script>
-
 <!-- JQuery -->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
 <!-- Colorbrewer (from D3) -->
 <script src="js/colorbrewer.js"></script>
-
 <!-- Markdown lib to render markdown -->
 <script src="js/markdown.min.js"></script>
+
+
+<body>
+  <div id="map"></div>
+  <div id="getting-started"></div>
+<body>
+
+
+
 
 <script>
 
 
 //////////////////////////////// Begin DG ////////////////////////////////
-
-
 
 
 window.onload = function() {
@@ -56,12 +51,9 @@ window.onload = function() {
 
 function renderGettingStarted() {
   exampleUrl = location.href + "?key=0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc";
-  //html = markdown.toHTML("Sorry! **You** need to add a Google key to your URL. For example:\n\n" + "[" + exampleUrl + "]" + "(" + exampleUrl + ")");
-  //$("body").html(html);
-  //loadStyle("css/github.css");
-  $("map").remove();
+  $("#map").remove();
   $.get('GETTING_STARTED.md', function(raw_markdown) {
-    $("body").append(markdown.toHTML(raw_markdown))
+    $("#getting-started").append(markdown.toHTML(raw_markdown))
   });
 }
 
