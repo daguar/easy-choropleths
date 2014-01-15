@@ -1,3 +1,5 @@
+# Easy Choropleths
+
 ### Customization Options
 
 There are additional options you can add to a URL to customize your map.
