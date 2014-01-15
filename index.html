@@ -60,7 +60,6 @@ window.onload = function() {
 };
 
 function renderGettingStarted() {
-  exampleUrl = location.href + "?key=0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc";
   $("#map").remove();
   $.get('GETTING_STARTED.md', function(raw_markdown) {
     $("#getting-started").append(markdown.toHTML(raw_markdown))
