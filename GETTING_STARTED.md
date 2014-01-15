@@ -1,5 +1,9 @@
 ## Getting Started
 
+### Example!
+
+[Screw tutorials! Click here to see it in action!](http://daguar.github.io/easy-choropleths/?key=0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc&scale=9&color=blue)
+
 ### Short instructions
 
 - Create a Google spreadsheet with two columns: `state` and `value` ([click here for an example spreadsheet](https://docs.google.com/spreadsheet/ccc?key=0Ah8tYWLqUd7wdE9qV2RHaW1abExwVUtCMVFmZWNQdnc&usp=sharing))
