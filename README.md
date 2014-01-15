@@ -3,11 +3,13 @@ Easy Choropleths
 
 An experimental tool to let humans build choropleths (data-shaded maps) without any knowledge of Javascript or GIS.
 
-The idea is flushed out in my `ideas` repo here:
+Try it out here! http://daguar.github.io/easy-choropleths/
 
-https://github.com/daguar/ideas/issues/2
+### About
 
-### Running
+The idea and motivation for this is flushed out in my `ideas` repo here: https://github.com/daguar/ideas/issues/2
+
+### Running Locally
 
 Right now, easiest way is to `cd` into the root directory and run the python one-liner web server:
 `python -m SimpleHTTPServer`
