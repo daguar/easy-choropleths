@@ -89,8 +89,6 @@ function scaleData(data) {
 }
 
 function mapData(data) {
-  //loadStyle("css/leaflet.css");
-  //loadStyle("css/map.css");
   var map = L.map('map').setView([37.8, -96], 4);
   // Do shit inside here for now
   if(Config.geo_unit === 'county') {
@@ -184,8 +182,8 @@ function addDataToGeoJson(data, geojson) {
       feature.properties.value = data_object.value;
     }
     else {
-      feature.properties.scaled_value = -1;
-      feature.properties.value = -1;
+      feature.properties.scaled_value = 0;
+      feature.properties.value = 0;
     }
   });
   return geojson;
@@ -193,18 +191,25 @@ function addDataToGeoJson(data, geojson) {
 
 function style(feature) {
   color = getColor(feature.properties.scaled_value, Config.scale);
-    return {
-        fillColor: color,
-        weight: 2,
-        opacity: 1,
-        color: 'white',
-        //dashArray: '3',
-        fillOpacity: 1
-    };
+  borderColor = '#ccc';
+
+  // Default to white if necessary.
+  if (color === undefined) {
+    color = "#fff";
+  }
+
+  return {
+      fillColor: color,
+      weight: 2,
+      opacity: 1,
+      color: borderColor,
+      fillOpacity: 1
+  };
 }
 
 // Make sure it deals with -1 (no data)
 function getColor(num, scale) {
+  console.log(colorbrewer.Greens[scale][num - 1]);
   if(Config.color === 'blue') {
     // Index in the array is 1 less than the scaled_number
     return colorbrewer.Blues[scale][num - 1];
@@ -261,10 +266,9 @@ function highlightFeature(e) {
   var layer = e.target;
 
   layer.setStyle({
-    weight: 5,
-    color: '#666',
-    dashArray: ''//,
-    //fillOpacity: 0.7
+    weight: 2,
+    color: '#000',
+    dashArray: ''
   });
 
   if (!L.Browser.ie && !L.Browser.opera) {
