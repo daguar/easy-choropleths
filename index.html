@@ -25,7 +25,7 @@
 <!-- Leaflet -->
 <script src="js/leaflet.js"></script>
 <!-- Tabletop for Google Docs data pull -->
-<script src="js/tabletop.js"></script>
+<script src="https://unpkg.com/tabletop@1.5.2"></script>
 <!-- Underscore for awesome collection comprehensions -->
 <script src="js/underscore-min.js"></script>
 <!-- ParseURI.js because it's dead-simple and small -->
@@ -43,7 +43,7 @@
 
 <body>
   <div id="map"></div>
-  
+
   <div class="container">
     <div id="getting-started"></div>
   </div>
@@ -61,7 +61,7 @@
 
 window.onload = function() {
   key = parseUri(location).queryKey.key
-  if(key) {    
+  if(key) {
     uri_parameters = parseUri(location).queryKey;
     configureMapOptions(uri_parameters);
     getDataFromGoogle(key, scaleAndMapData);
@@ -160,7 +160,7 @@ console.log(extractValuesFromObjectArray(obj_arr));
 */
 
 // Quantizing data into buckets
-// Given 
+// Given
 function Quantizer(data_array, scale) {
   min = d3.min(data_array)
   max = d3.max(data_array)
